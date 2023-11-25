@@ -28,6 +28,7 @@ DATA_LOCATION = os.environ.get("DATA_LOCATION")
 import glob
 
 GPT_MODEL = "gpt-4-1106-preview"
+#GPT_MODEL = "gpt-3.5-turbo"
 
 def _get_teaser_for_story(story_no: int) -> str:
     """Get the teaser for a given story_no."""
