@@ -94,6 +94,15 @@ def teaser_matches_crit(teaser : str, prompt : str, crit : str) -> str:
     return teaser_match_output
 
 
+def aggregate_decisions(decisions : list, prompt : str) -> str:
+
+    all_decs = " | ".join(decisions)
+    agg_dec_prompt = PromptTemplate(template=prompt, input_variables=["TEXT"])
+    add_dec_chain = agg_dec_prompt | ChatOpenAI(temperature=0, model=GPT_MODEL) | StrOutputParser()
+
+    agg_dec_output = add_dec_chain.invoke({"TEXT" : all_decs})
+    return agg_dec_output
+
 def gen_sum_statements(story_no: int) -> List:
     possible_candidates_teaser: list = []
     possible_candidates_statements: list = []
