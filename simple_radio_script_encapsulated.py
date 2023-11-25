@@ -86,11 +86,11 @@ def _get_statements_for_story_id(story_no: int) -> dict:
     return res
 
 
-def teaser_matches_crit(teaser : str, prompt : str) -> str:
-    teaser_crit_prompt = PromptTemplate(template=prompt, input_variables=["TEXT"])
+def teaser_matches_crit(teaser : str, prompt : str, crit : str) -> str:
+    teaser_crit_prompt = PromptTemplate(template=prompt, input_variables=["TEXT", "CRITERIA"])
     teaser_chain = teaser_crit_prompt | ChatOpenAI(temperature=0, model=GPT_MODEL) | StrOutputParser()
 
-    teaser_match_output = teaser_chain.invoke({"TEXT": teaser})
+    teaser_match_output = teaser_chain.invoke({"TEXT": teaser, "CRITERIA": crit})
     return teaser_match_output
 
 
