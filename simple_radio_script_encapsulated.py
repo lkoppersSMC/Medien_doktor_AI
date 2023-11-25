@@ -27,6 +27,7 @@ DATA_LOCATION = os.environ.get("DATA_LOCATION")
 
 import glob
 
+GPT_MODEL = "gpt-4-1106-preview"
 
 def _get_teaser_for_story(story_no: int) -> str:
     """Get the teaser for a given story_no."""
@@ -87,7 +88,7 @@ def _get_statements_for_story_id(story_no: int) -> dict:
 
 def teaser_matches_crit(teaser : str, prompt : str) -> str:
     teaser_crit_prompt = PromptTemplate(template=prompt, input_variables=["TEXT"])
-    teaser_chain = teaser_crit_prompt | ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k") | StrOutputParser()
+    teaser_chain = teaser_crit_prompt | ChatOpenAI(temperature=0, model=GPT_MODEL) | StrOutputParser()
 
     teaser_match_output = teaser_chain.invoke({"TEXT": teaser})
     return teaser_match_output
@@ -134,7 +135,7 @@ def gen_sum_statements(story_no: int) -> List:
     """
 
     text_chain_prompt = PromptTemplate(template=text_chain_prompt_template, input_variables=["CONTEXT", "TEXT"])
-    text_chain = text_chain_prompt | ChatOpenAI(temperature=0, model="gpt-3.5-turbo") | StrOutputParser()
+    text_chain = text_chain_prompt | ChatOpenAI(temperature=0, model=GPT_MODEL) | StrOutputParser()
 
     summeraized_statements = [text_chain.invoke({"CONTEXT": "", "TEXT": statement}) for statement in possible_candidates_statements]
 
@@ -156,7 +157,7 @@ def gen_sum_statements_sums(summeraized_statements):
     """
 
     statement_chain_prompt = PromptTemplate(template=statement_chain_prompt_template, input_variables=["CONTEXT", "TEXT"])
-    statement_chain = statement_chain_prompt | ChatOpenAI(temperature=0, model="gpt-3.5-turbo") | StrOutputParser()
+    statement_chain = statement_chain_prompt | ChatOpenAI(temperature=0, model=GPT_MODEL) | StrOutputParser()
 
     summerization_statements = statement_chain.invoke({"CONTEXT": "", "TEXT": [f"<statement_begin>{statement}<statement_end>" for statement in summeraized_statements]})
 
@@ -178,7 +179,7 @@ def gen_sum_teaser(story_no):
     """
 
     teaser_chain_prompt = PromptTemplate(template=teaser_chain_prompt_template, input_variables=["TEXT"])
-    teaser_chain = teaser_chain_prompt | ChatOpenAI(temperature=0, model="gpt-3.5-turbo") | StrOutputParser()
+    teaser_chain = teaser_chain_prompt | ChatOpenAI(temperature=0, model=GPT_MODEL) | StrOutputParser()
 
     summerization_teaser = teaser_chain.invoke({"TEXT": possible_candidates_teaser[0]})
 
@@ -204,7 +205,7 @@ def gen_radio_show_transcript(teaser_sum, statement_sums_sum):
     """
 
     radioc_chain_prompt = PromptTemplate(template=radio_chain_prompt_template, input_variables=["TEASER", "STATEMENTS"])
-    radio_chain = radioc_chain_prompt | ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k") | StrOutputParser()
+    radio_chain = radioc_chain_prompt | ChatOpenAI(temperature=0, model=GPT_MODEL) | StrOutputParser()
 
     radio_transcript = radio_chain.invoke({"TEASER": teaser_sum, "STATEMENTS": statement_sums_sum})
 
